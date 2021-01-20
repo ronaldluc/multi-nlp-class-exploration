@@ -19,5 +19,5 @@ CONFIG = {
     'pca': {
         'n_components': 256,
     },
-    'pred_col': 'l2',
+    'pred_col': 'l1',
 }
