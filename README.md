@@ -16,14 +16,21 @@ Když jsem tady tolik rentil o pomalosti Frameworku, bude hlavní challenge zpra
 ## The plan
 
 1. generate attribute matrices, store in pyarrow
-    - tf-idf ()
-    - average fasttext/word2vec embedding
-    - UniversalSentenceEncoder
+    - tf-idf (scikit)
+    - average fasttext/word2vec embedding (gensim?)
+    - UniversalSentenceEncoder (TF2)
 2. apply dim reduction (scikit)
     - none
-    - PCA
-    - SVD
+    - PCA (scikit)
+    - Other?
 3. train classificators on 9 matrices
-    - SVM (scikit)
+    - SVM (scikit, slow :( single core)
     - Random forrest (scikit)
-    - MLP (Keras)
+    - MLP (TF.Keras)
+    
+## General TODO
+- Update logging to show time etc.
+- Add progress, progress bar, ETA in a general manner for each of the Init/OD/CLF steps
+    - Compute the ETA based on CLF type and dataset size (in cells? length?)
+    - Max-time based CLF step: start with 2**10 train examples and train on 2× larger each time the training 
+      stops in X seconds => at most 4× X seconds per CLF (given the algos are at most |N**2|)

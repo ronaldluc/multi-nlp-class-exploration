@@ -36,6 +36,7 @@ def classify_forest(od_matrices: OdMatrix, original_dfs: Dataset):
     return res
 
 
+# TODO: Change to tf.Keras for extra spice
 def classify_mlp(od_matrices: OdMatrix, original_dfs: Dataset):
     info(f'Classifying MLP on {train_size(od_matrices)}')
     res = defaultdict(dict)
