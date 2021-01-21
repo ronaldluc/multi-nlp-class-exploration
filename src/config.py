@@ -2,12 +2,12 @@
 # If in code, dataclasses would be better, but we have no time for that
 
 CONFIG = {
-    'debug': True,
+    'debug': False,
     'debug_info': {
-        'head_size': 1024 * 20
+        'head_size': 1024 * 40
     },
     'universal_sentence_encoder': {
-        'batch_size': 1024 * 1,
+        'batch_size': 1024 * 4,
         'url': 'https://tfhub.dev/google/universal-sentence-encoder/4'
     },
     'tfidf': {

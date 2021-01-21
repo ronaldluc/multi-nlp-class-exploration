@@ -51,7 +51,7 @@ def classify_mlp(od_matrices: OdMatrix, original_dfs: Dataset):
 
 def classify(od_matrices: OdMatrix, original_dfs: Dataset):
     return {
-        'svc': classify_svc(od_matrices, original_dfs),
+        # 'svc': classify_svc(od_matrices, original_dfs),
         'forest': classify_forest(od_matrices, original_dfs),
         'mlp': classify_mlp(od_matrices, original_dfs),
     }
