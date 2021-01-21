@@ -20,4 +20,5 @@ CONFIG = {
         'n_components': 256,
     },
     'pred_col': 'l1',
+    'text_col': 'text'
 }

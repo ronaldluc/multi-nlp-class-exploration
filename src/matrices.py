@@ -53,7 +53,7 @@ def create_tfidf(dfs: Dataset) -> Dataset:
     info(f'Computing tf-idf on {dfs["train"].shape}')
     vectorizer = TfidfVectorizer(strip_accents='unicode', lowercase='true',
                                  preprocessor=stem_string, stop_words='english',
-                                 max_features=10000, dtype=np.float32, min_df=10,
+                                 max_features=10000, dtype=np.float32, min_df=0,
                                  max_df=0.2, ngram_range=(1, 1))
     vectorizer.fit(dfs['train'].text)
     return {name: vectorizer.transform(df.text) for name, df in dfs.items()}
@@ -77,7 +77,7 @@ def create_wordvec(dfs: Dataset) -> Dataset:
     info(f'Computing word vectors on {dfs["train"].shape}')
     vectorizer = TfidfVectorizer(strip_accents='unicode', lowercase='true',  # put into config
                                  preprocessor=stem_string, stop_words='english',
-                                 max_features=512, dtype=np.float32, min_df=10,
+                                 max_features=512, dtype=np.float32, min_df=5,     # TODO: compute reasonable min_df
                                  max_df=0.2, ngram_range=(1, 1))
     vectorizer.fit(dfs['train'].text)
     return {name: vectorizer.transform(df.text) for name, df in dfs.items()}
@@ -91,7 +91,7 @@ def load_df(path) -> pd.DataFrame:
         df = pd.read_feather(path.with_suffix('.feather'))
     if CONFIG['debug']:
         return df.head(CONFIG['debug_info']['head_size'])
-    return df
+    return df.rename(columns={CONFIG['text_col']: 'text'})
 
 
 def load_data(**paths: Path) -> Dataset:
