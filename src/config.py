@@ -14,7 +14,7 @@ CONFIG = {
 
     },
     'storage': {
-        'initial_matrices': '../data/initial_matrices.pkl'
+        'initial_matrices': 'data/initial_matrices.pkl'
     },
     'pca': {
         'n_components': 256,
