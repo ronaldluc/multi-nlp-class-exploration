@@ -20,5 +20,10 @@ CONFIG = {
         'n_components': 256,
     },
     'pred_col': 'l1',
-    'text_col': 'text'
+    'text_col': 'text',
+    'split': {
+        'train': 0.8,
+        'val': 0.1,
+        'test': 0.1
+    }
 }

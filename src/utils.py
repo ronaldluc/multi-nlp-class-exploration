@@ -2,7 +2,8 @@ import math
 from typing import Dict, Optional, Any, Union
 import numpy as np
 import pandas as pd
-from os.path import isfile
+from src.config import CONFIG
+from logging import info, debug
 
 Dataset = Dict[str, Union[pd.DataFrame, np.ndarray]]
 """[train/val/test] -> np.ndarray"""
@@ -27,6 +28,7 @@ def train_size(x: Dict):
         return sum([total_size(x_) for x_ in x.values()])
 
 def data_split(filepath: str):
+    info(f'Splitting dataset into train: {CONFIG["split"]["train"]}, val: {CONFIG["split"]["val"]}, test: {CONFIG["split"]["test"]}')
     df = pd.read_csv(filepath)
     size = df.iloc[:,0].size
     #df.l1 = pd.factorize(df.l1)[0]
