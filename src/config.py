@@ -25,5 +25,21 @@ CONFIG = {
         'train': 0.8,
         'val': 0.1,
         'test': 0.1
+    },
+    'tfidf_params': {
+        'lowercase': 'true',
+        'stop_words': 'english',
+        'max_features': 10000,
+        'min_df': 0,
+        'max_df': 0.2,
+        'ngram_range': (1, 1)
+    },
+    'wordvec_params': {
+        'lowercase': 'true',
+        'stop_words': 'english',
+        'max_features': 512,
+        'min_df': 5,
+        'max_df': 0.2,
+        'ngram_range': (1, 1)
     }
 }
