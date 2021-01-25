@@ -6,11 +6,13 @@ import numpy as np
 import pandas as pd
 import re
 import tensorflow_hub as hub
+from gensim.utils import simple_preprocess
 from sklearn.feature_extraction.text import TfidfVectorizer
 from stemming.lovins import stem
 
 from gensim.models.fasttext import load_facebook_vectors
 from gensim.test.utils import datapath
+import gensim.downloader as api
 
 from src.config import CONFIG
 from src.utils import InitMatrix, Dataset
@@ -77,16 +79,20 @@ def create_use(dfs: Dataset) -> Dataset:
 def create_wordvec(dfs: Dataset) -> Dataset:
     """Compute word-vector based doc embedding"""
     info(f'Computing word vectors on {dfs["train"].shape}')
-    cap_path = datapath(CONFIG['wordvec_params']['link'])
-    model = load_facebook_vectors(cap_path)
+    # cap_path = datapath(CONFIG['wordvec_params']['link'])
+    # model = load_facebook_vectors(cap_path)
+    model = api.load(CONFIG['wordvec_params']['link'])
 
     return {name: get_wordvec(df, model) for name, df in dfs.items()}
 
+
 def get_wordvec(df, model):
     """Get word-vector based doc embedding given text and model"""
-    res = (np.average(model[re.sub('\?|\.|\!|\/|\;|\:', '', value).split(' ')], axis=0) for value in df['text'].values)
-
-    return np.vstack(tuple(res))
+    # One of these should work
+    return df.text.apply(lambda doc: model[simple_preprocess(doc)].mean(axis=0))
+    return np.stack(df.text.apply(lambda doc: model[simple_preprocess(doc)].mean(axis=0)))
+    return df.text.apply(lambda doc: model[simple_preprocess(doc)].mean(axis=0)).to_numpy()
+    return np.stack([model[simple_preprocess(doc)].mean(axis=0) for doc in df.text])
 
 
 def load_df(path) -> pd.DataFrame:

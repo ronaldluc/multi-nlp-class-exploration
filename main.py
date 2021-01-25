@@ -12,15 +12,14 @@ from src.od import apply_od
 from src.utils import InitMatrix, total_size, data_split
 
 if __name__ == "__main__":
-    data_split('data/data.csv')
+    # data_split('data/data.csv')
     basicConfig(level=DEBUG)
-    data_folder = Path('../data')
-    # dfs_ = load_data(**{name: next(data_folder.glob(f'*{name}.csv')) for name in ['train', 'val', 'test']})
+    data_folder = Path('data')
+    dfs_ = load_data(**{name: next(data_folder.glob(f'DB*{name}.csv')) for name in ['train', 'val', 'test']})
     # works as well, change it to your liking TODO: put into some config not to overwrite it for each other
-    dfs_ = load_data(train='data/train.csv', val='data/val.csv', test='data/test.csv')
-    print(dfs_)
+    # dfs_ = load_data(train='data/train.csv', val='data/val.csv', test='data/test.csv')
     initial_matrices = create_matrices(dfs_)
-    print(initial_matrices)
+
     pickle.dump(initial_matrices, open(CONFIG['storage']['initial_matrices'], 'wb'))
     initial_matrices_: InitMatrix = pickle.load(open(CONFIG['storage']['initial_matrices'], 'rb'))
     size = total_size(initial_matrices_)

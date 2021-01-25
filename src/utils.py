@@ -27,14 +27,12 @@ def train_size(x: Dict):
             return math.prod(x['train'].shape)
         return sum([total_size(x_) for x_ in x.values()])
 
+
 def data_split(filepath: str):
-    info(f'Splitting dataset into train: {CONFIG["split"]["train"]}, val: {CONFIG["split"]["val"]}, test: {CONFIG["split"]["test"]}')
-    df = pd.read_csv(filepath)
-    size = df.iloc[:,0].size
-    #df.l1 = pd.factorize(df.l1)[0]
+    info(f'Splitting dataset into train: {CONFIG["split"]["train"]}, val: {CONFIG["split"]["val"]}, '
+         f'test: {CONFIG["split"]["test"]}')
+    in_df = pd.read_csv(filepath)
+    size = len(in_df)
 
-    train, validate, test = np.split(df.sample(frac=1), [int(.6*size), int(.8*size)])
-
-    train.to_csv('data/train.csv', index=False)
-    validate.to_csv('data/val.csv', index=False)
-    test.to_csv('data/test.csv', index=False)
+    for name, df in zip(['train', 'val', 'test'], np.split(in_df.sample(frac=1), [int(.6 * size), int(.8 * size)])):
+        df.to_csv(f'data/{name}.csv', index=False)

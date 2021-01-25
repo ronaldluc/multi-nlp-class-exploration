@@ -2,12 +2,12 @@
 # If in code, dataclasses would be better, but we have no time for that
 
 CONFIG = {
-    'debug': False,
+    'debug': True,
     'debug_info': {
-        'head_size': 1024 * 40
+        'head_size': 1024 * 1
     },
     'universal_sentence_encoder': {
-        'batch_size': 1024 * 4,
+        'batch_size': 1024 * 1,
         'url': 'https://tfhub.dev/google/universal-sentence-encoder/4'
     },
     'tfidf': {
@@ -35,6 +35,8 @@ CONFIG = {
         'ngram_range': (1, 1)
     },
     'wordvec_params': {
-        'link': 'crime-and-punishment.bin', #only temporary value until I find better one
+        # 'link': 'crime-and-punishment.bin', #only temporary value until I find better one
+        'link': 'fasttext-wiki-news-subwords-300', #only temporary value until I find better one
+        # 'link': 'glove-wiki-gigaword-50', #only temporary value until I find better one
     }
 }
