@@ -4,9 +4,13 @@ from typing import Dict
 
 import numpy as np
 import pandas as pd
+import re
 import tensorflow_hub as hub
 from sklearn.feature_extraction.text import TfidfVectorizer
 from stemming.lovins import stem
+
+from gensim.models.fasttext import load_facebook_vectors
+from gensim.test.utils import datapath
 
 from src.config import CONFIG
 from src.utils import InitMatrix, Dataset
@@ -73,10 +77,16 @@ def create_use(dfs: Dataset) -> Dataset:
 def create_wordvec(dfs: Dataset) -> Dataset:
     """Compute word-vector based doc embedding"""
     info(f'Computing word vectors on {dfs["train"].shape}')
-    vectorizer = TfidfVectorizer(**CONFIG['wordvec_params'], strip_accents='unicode', preprocessor=stem_string,
-                                 dtype=np.float32)  # TODO: compute reasonable min_df
-    vectorizer.fit(dfs['train'].text)
-    return {name: vectorizer.transform(df.text) for name, df in dfs.items()}
+    cap_path = datapath(CONFIG['wordvec_params']['link'])
+    model = load_facebook_vectors(cap_path)
+
+    return {name: get_wordvec(df, model) for name, df in dfs.items()}
+
+def get_wordvec(df, model):
+    """Get word-vector based doc embedding given text and model"""
+    res = (np.average(model[re.sub('\?|\.|\!|\/|\;|\:', '', value).split(' ')], axis=0) for value in df['text'].values)
+
+    return np.vstack(tuple(res))
 
 
 def load_df(path) -> pd.DataFrame:

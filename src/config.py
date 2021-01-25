@@ -17,7 +17,7 @@ CONFIG = {
         'initial_matrices': 'data/initial_matrices.pkl'
     },
     'pca': {
-        'n_components': 256,
+        'n_components': 2,
     },
     'pred_col': 'l1',
     'text_col': 'text',
@@ -35,11 +35,6 @@ CONFIG = {
         'ngram_range': (1, 1)
     },
     'wordvec_params': {
-        'lowercase': 'true',
-        'stop_words': 'english',
-        'max_features': 512,
-        'min_df': 5,
-        'max_df': 0.2,
-        'ngram_range': (1, 1)
+        'link': 'crime-and-punishment.bin', #only temporary value until I find better one
     }
 }
