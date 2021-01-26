@@ -33,7 +33,7 @@ def stem_string(string):
     return " ".join(stemmed_tokens)
 
 
-def create_matrices(dfs: Dict[str, pd.DataFrame]) -> InitMatrix:
+def create_matrices(dfs: Dict[str, pd.DataFrame], method: str) -> InitMatrix:
     """
     dfs must contain 'train' key
     all df must contain column 'text'
@@ -42,24 +42,24 @@ def create_matrices(dfs: Dict[str, pd.DataFrame]) -> InitMatrix:
     """
     info(f'Computing initial matrices on {dfs["train"].shape}')
     return {
-        'tfidf': create_tfidf(dfs),
-        'uce': create_use(dfs),
-        'wordvec': create_wordvec(dfs),
-    }
+        'tfidf': create_tfidf,
+        'uce': create_uce,
+        'wordvec': create_wordvec,
+    }[method](dfs)
 
 
-def create_tfidf(dfs: Dataset) -> Dataset:
+def create_tfidf(dfs: Dataset, max_features=10000, min_df=0, max_df=0.2) -> Dataset:
     """Compute TF-IDF based doc embedding"""
     info(f'Computing tf-idf on {dfs["train"].shape}')
     vectorizer = TfidfVectorizer(strip_accents='unicode', lowercase='true',
                                  preprocessor=stem_string, stop_words='english',
-                                 max_features=10000, dtype=np.float32, min_df=0,
-                                 max_df=0.2, ngram_range=(1, 1))
+                                 max_features=max_features, dtype=np.float32, min_df=min_df,
+                                 max_df=max_df, ngram_range=(1, 1))
     vectorizer.fit(dfs['train'].text)
     return {name: vectorizer.transform(df.text) for name, df in dfs.items()}
 
 
-def create_use(dfs: Dataset) -> Dataset:
+def create_uce(dfs: Dataset) -> Dataset:
     """Compute universal sentence encodings based doc embedding"""
     info(f'Computing universal sentence encodings on {dfs["train"].shape}')
     model = hub.load(CONFIG['universal_sentence_encoder']['url'])

@@ -36,3 +36,9 @@ def data_split(filepath: str):
     train.to_csv('data/train.csv', index=False)
     validate.to_csv('data/val.csv', index=False)
     test.to_csv('data/test.csv', index=False)
+
+def nested_max( obj ):
+    """Returns maximum value in a nested dictionary"""
+    if type( obj ) == float or type( obj ) == int or type( obj ) == np.float64:
+        return obj
+    return max( [ nested_max( val ) for key, val in obj.items() ] )
