@@ -34,7 +34,8 @@ if __name__ == "__main__":
     pipeline.add_clf( "forest" )
     pipeline.add_clf( "mlp" )
 
-    pipeline.run()
+    best_settings = pipeline.run()
+    print( best_settings )
 
     # initial_matrices = create_matrices(dfs_)
     # pickle.dump(initial_matrices, open(CONFIG['storage']['initial_matrices'], 'wb'))
