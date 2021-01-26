@@ -19,7 +19,7 @@ def apply_pca(dfs: Dataset, **kwargs) -> Dataset:
     transformer.fit(dfs['train'])
     return {dataset: transformer.transform(df) for dataset, df in dfs.items()}
 
-def apply_scaler(initial_matrices: Dataset, **kwargs) -> Dataset:
+def apply_scaler(dfs: Dataset, **kwargs) -> Dataset:
     info(f'Applying Scaler on {train_size(initial_matrices)}')
     transformer = StandardScaler(with_mean=False, **kwargs)
     # ValueError: Cannot center sparse matrices: pass `with_mean=False` instead. See docstring for motivation and alternatives.
