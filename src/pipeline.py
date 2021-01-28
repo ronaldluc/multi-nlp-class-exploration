@@ -29,15 +29,20 @@ class Pipeline:
 			dataset = create_matrices( self.dfs, prep )
 			for od in self.od_methods:
 				for clf in self.clf_methods:
+					pipe_name = f"{prep}-{od}-{clf}"
 					try:
-						info( f'Running {prep}-{od}-{clf} ({index}/{total_settings})' )
+						info( f'Running {pipe_name} ({index}/{total_settings})' )
 						best_settings = self._run_step( dataset, prep, od, clf )
-						results[f"{prep}-{od}-{clf}"] = best_settings
+						results[pipe_name] = best_settings
 						info( f"Best setting {best_settings}" )
 						info( f'Finished {prep}-{od}-{clf}' )
 					except Exception as e:
 						info( f'Step {prep}-{od}-{clf}: bayes opt failed, {e}' )
-						results[f"{prep}-{od}-{clf}"] = "failed"
+						results[pipe_name] = "failed"
+
+					if results[pipe_name] != "failed":
+						results[pipe_name]["test_score"] = self._test_settings( self.dfs, dataset, od, clf, results[pipe_name]["params"] )
+
 					index += 1
 
 		return results
@@ -60,13 +65,18 @@ class Pipeline:
 		optimizer.maximize( init_points=BAYES_OPT_CONFIG["init_points"], n_iter=BAYES_OPT_CONFIG["steps"] )
 		return optimizer.max
 
+	def _test_settings( self, orig_dataset, prep_dataset, od, clf, settings ):
+		od_kwargs, clf_kwargs = Pipeline.distribute_config( od, clf, **settings )
+		od_dfs = apply_od( prep_dataset, od, **od_kwargs )
+		return classify( od_dfs, orig_dataset, clf, is_test=True, **clf_kwargs )
+
 	def create_optimized_function( self, orig_dataset, prep_dataset, od, clf ):
 		def optimized_function( **kwargs ):
 			od_kwargs, clf_kwargs = Pipeline.distribute_config( od, clf, **kwargs )
 			print( f'od_kwargs={od_kwargs}, clf_kwargs={clf_kwargs}')
 
 			od_dfs = apply_od( prep_dataset, od, **od_kwargs )
-			return classify( od_dfs, orig_dataset, clf, **clf_kwargs )
+			return classify( od_dfs, orig_dataset, clf, is_test=False, **clf_kwargs )
 
 		return optimized_function
 
