@@ -7,13 +7,22 @@ from logging import basicConfig, DEBUG, info
 
 from src.classify import classify
 from src.matrices import load_data, create_matrices
-from src.config import CONFIG
+from src.config import CONFIG, BAYES_OPT_CONFIG
 from src.od import apply_od
 from src.utils import InitMatrix, total_size, data_split
 
 from src.pipeline import Pipeline
 
+def print_config_warnings():
+    print( "##### CHECK YOUR CONFIG #####" )
+    print( f"Text column: {CONFIG['text_col']}" )
+    print( f"Label column: {CONFIG['pred_col']}" )
+    print( f"Eval metric: {'F1-score' if CONFIG['use_f1'] else 'Accuracy'}" )
+    print( f"Bayesian optimization steps: {BAYES_OPT_CONFIG['steps']}" )
+    print( "#############################" )
+
 if __name__ == "__main__":
+    print_config_warnings()
     data_split('data/data.csv')
     basicConfig(level=DEBUG)
     data_folder = Path('../data')
