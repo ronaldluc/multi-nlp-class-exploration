@@ -25,7 +25,7 @@ CONFIG = {
 float parameters have to be in float format -> xx.xx
 """
 BAYES_OPT_CONFIG = {
-    "steps": 6,  # change to 10?
+    "steps": 2,  # change to 10?
     "init_points": 4,
     "od": {
         "pca": {

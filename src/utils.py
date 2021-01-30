@@ -64,9 +64,11 @@ class ProgressLog:
         delta = time() - self.start
         self.exp_average = self.exp_average + ((time() - self.last) - self.exp_average) / min(done + 1e-4, self.factor)
         self.last = time()
-        eta = (delta / (done + 1e-4)) * left
-        eta_delta = abs(eta - self.exp_average * left)
+        per_one = (delta / (done + 1e-4))
+        per_one_delta = abs(per_one - self.exp_average)
         info(f'{done:{self.log_len}}/{self.total:{self.log_len}} done\t'
              f'rate: {done / (delta + 1e-4):5.2}\t'
-             f'ETA: {str(timedelta(seconds=eta-eta_delta)).split(".")[0]}-'
-             f'{str(timedelta(seconds=eta+eta_delta)).split(".")[0]}')
+             f'ETA: {str(timedelta(seconds=max(0, per_one-per_one_delta)*left)).split(".")[0]}-'
+             f'{str(timedelta(seconds=(per_one+per_one_delta)*left)).split(".")[0]}\t'
+             f'Total: {str(timedelta(seconds=max(0, per_one-per_one_delta)*self.total)).split(".")[0]}-'
+             f'{str(timedelta(seconds=(per_one+per_one_delta)*self.total)).split(".")[0]}')

@@ -11,7 +11,7 @@ from src.utils import Dataset, train_size
 
 
 def classify_method(dfs: Dataset, original_dfs: Dataset, method_class, is_test: bool, **kwargs):
-    debug(f'classify_method: Classifying {method_class.__name__} on {train_size(dfs)}')
+    debug(f'classify_method: Classifying {method_class.__name__} on {train_size(dfs):e}')
 
     clf = method_class(**kwargs)
     clf.fit(dfs['train'], original_dfs['train'][CONFIG['pred_col']])

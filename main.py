@@ -28,9 +28,9 @@ if __name__ == "__main__":
     # data_split('data/data.csv')
     basicConfig(level=INFO)
     data_folder = Path('data')
-    # dfs_ = load_data(**{name: next(data_folder.glob(f'DB*{name}.csv')) for name in ['train', 'val', 'test']})
+    dfs_ = load_data(**{name: next(data_folder.glob(f'DB*{name}.csv')) for name in ['train', 'val', 'test']})
     #     # works as well, change it to your liking TODO: put into some config not to overwrite it for each other
-    dfs_ = load_data(train='data/train.csv', val='data/val.csv', test='data/test.csv')
+    # dfs_ = load_data(train='data/train.csv', val='data/val.csv', test='data/test.csv')
 
     pipeline = Pipeline(dfs_)
     pipeline.add_prep("tfidf").add_prep("uce").add_prep("wordvec")

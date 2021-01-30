@@ -1,7 +1,7 @@
 import pickle
 from itertools import product
 from pathlib import Path
-from random import uniform, gauss
+from random import uniform, gauss, shuffle, sample
 from time import time
 
 from bayes_opt import BayesianOptimization
@@ -41,11 +41,11 @@ class Pipeline:
 
     def run(self):
         results = {}
-
-        progress = ProgressLog(len(self.prep_methods) * len(self.od_methods) * len(self.clf_methods))
-        for index, pipe_def in enumerate(product(self.prep_methods, self.od_methods, self.clf_methods)):
+        search_space = list(product(self.prep_methods, self.od_methods, self.clf_methods))
+        shuffle(search_space)
+        progress = ProgressLog(len(search_space))
+        for index, pipe_def in enumerate(search_space):
             prep, od, clf = pipe_def
-
             info(f'Running {pipe_def}')
             progress.log(done=index)
             try:
