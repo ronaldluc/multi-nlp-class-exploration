@@ -16,6 +16,9 @@ CONFIG = {
     'storage': {
         'initial_matrices': 'data/tmp'
     },
+    'wordvec': {
+        'url': 'fasttext-wiki-news-subwords-300',
+    },
     'pred_col': 'l1',  # name of column with label
     'text_col': 'text',  # name of column with text
     "use_f1": False  # change to False if you use Accuracy
@@ -25,8 +28,8 @@ CONFIG = {
 float parameters have to be in float format -> xx.xx
 """
 BAYES_OPT_CONFIG = {
-    "steps": 2,  # change to 10?
-    "init_points": 4,
+    "steps": 7,  # change to 10?
+    "init_points": 3,
     "od": {
         "pca": {
             "n_components": [64, 512],

@@ -1,16 +1,10 @@
-import math
-import pickle
+from pathlib import Path
+from logging import basicConfig, INFO
 from pathlib import Path
 from pprint import pprint
 
-from logging import basicConfig, DEBUG, info, INFO
-
-from src.classify import classify
-from src.matrices import load_data, create_matrices
 from src.config import CONFIG, BAYES_OPT_CONFIG
-from src.od import apply_od
-from src.utils import InitMatrix, total_size, data_split
-
+from src.matrices import load_data
 from src.pipeline import Pipeline
 
 
@@ -39,7 +33,7 @@ if __name__ == "__main__":
 
     pipeline.add_clf("svc").add_clf("forest").add_clf("mlp")
 
-    pipeline.create_matrices()
+    # pipeline.create_matrices()
     best_settings = pipeline.run()
     pprint(best_settings)
 

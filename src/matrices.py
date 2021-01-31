@@ -5,6 +5,9 @@ from typing import Dict
 import numpy as np
 import pandas as pd
 import tensorflow_hub as hub
+from gensim import downloader
+from gensim.models import KeyedVectors
+from gensim.utils import simple_preprocess
 from sklearn.feature_extraction.text import TfidfVectorizer
 from stemming.lovins import stem
 
@@ -75,12 +78,11 @@ def create_uce(dfs: Dataset) -> Dataset:
 def create_wordvec(dfs: Dataset) -> Dataset:
     """Compute word-vector based doc embedding"""
     info(f'Computing word vectors on {dfs["train"].shape}')
-    vectorizer = TfidfVectorizer(strip_accents='unicode', lowercase='true',  # put into config
-                                 preprocessor=stem_string, stop_words='english',
-                                 max_features=512, dtype=np.float32, min_df=5,     # TODO: compute reasonable min_df
-                                 max_df=0.2, ngram_range=(1, 1))
-    vectorizer.fit(dfs['train'].text)
-    return {name: vectorizer.transform(df.text) for name, df in dfs.items()}
+    path = downloader.load(CONFIG['wordvec']['url'], return_path=True)
+    w2v = KeyedVectors.load_word2vec_format(path, binary=False, limit=200000)
+    return {name: np.stack(df.text.apply(
+        lambda doc: w2v[[w for w in simple_preprocess(doc) if w in w2v]].mean(axis=0)
+    )) for name, df in dfs.items()}
 
 
 def load_df(path) -> pd.DataFrame:

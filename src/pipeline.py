@@ -1,15 +1,14 @@
 import pickle
 from itertools import product
+from logging import info, error
 from pathlib import Path
-from random import uniform, gauss, shuffle, sample
-from time import time
+from random import gauss, shuffle
 
 from bayes_opt import BayesianOptimization
-from logging import info, error
 
 from src.classify import classify
-from src.matrices import load_data, create_matrices
 from src.config import CONFIG, BAYES_OPT_CONFIG
+from src.matrices import create_matrices
 from src.od import apply_od
 from src.utils import ProgressLog
 

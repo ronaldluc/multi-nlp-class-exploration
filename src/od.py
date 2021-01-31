@@ -1,13 +1,11 @@
+import copy
 from logging import debug
 
 from sklearn.decomposition import TruncatedSVD
 from sklearn.preprocessing import StandardScaler
 
-from src.config import CONFIG
-from src.utils import InitMatrix, OdMatrix, train_size
 from src.utils import Dataset
-
-import copy
+from src.utils import train_size
 
 
 # TODO: Maybe merge all scikit transformers and use scikit pipeline?

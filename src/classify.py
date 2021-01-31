@@ -1,10 +1,9 @@
-from collections import defaultdict
-from logging import debug, debug
+from logging import debug
 
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import f1_score
 from sklearn.neural_network import MLPClassifier
 from sklearn.svm import SVC
-from sklearn.metrics import f1_score
 
 from src.config import CONFIG
 from src.utils import Dataset, train_size

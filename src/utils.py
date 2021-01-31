@@ -2,10 +2,10 @@ import math
 from datetime import timedelta
 from logging import info
 from time import time
-from typing import Dict, Optional, Any, Union
+from typing import Dict, Union
+
 import numpy as np
 import pandas as pd
-from os.path import isfile
 
 Dataset = Dict[str, Union[pd.DataFrame, np.ndarray]]
 """[train/val/test] -> np.ndarray"""
@@ -68,7 +68,7 @@ class ProgressLog:
         per_one_delta = abs(per_one - self.exp_average)
         info(f'{done:{self.log_len}}/{self.total:{self.log_len}} done\t'
              f'rate: {done / (delta + 1e-4):5.2}\t'
-             f'ETA: {str(timedelta(seconds=max(0, per_one-per_one_delta)*left)).split(".")[0]}-'
-             f'{str(timedelta(seconds=(per_one+per_one_delta)*left)).split(".")[0]}\t'
-             f'Total: {str(timedelta(seconds=max(0, per_one-per_one_delta)*self.total)).split(".")[0]}-'
-             f'{str(timedelta(seconds=(per_one+per_one_delta)*self.total)).split(".")[0]}')
+             f'ETA: {str(timedelta(seconds=max(0, per_one - per_one_delta) * left)).split(".")[0]}-'
+             f'{str(timedelta(seconds=(per_one + per_one_delta) * left)).split(".")[0]}\t'
+             f'Total: {str(timedelta(seconds=max(0, per_one - per_one_delta) * self.total)).split(".")[0]}-'
+             f'{str(timedelta(seconds=(per_one + per_one_delta) * self.total)).split(".")[0]}')
