@@ -47,23 +47,47 @@ BAYES_OPT_CONFIG = {
         "none": {}
     },
     "clf": {
-        "svc": {
-            "C": [0.5, 10.0]
+        "svc_rbf": {
+            "C": [1e-1, 1e10],
+            "gamma": [1e-10, 1e-2]
+        },
+        "svc_linear": {
+            "C": [1e-1, 1e10]
+        },
+        "svc_poly": {
+            "C": [1e-1, 1e10],
+            "degree": [2, 10],
+            "gamma": [1e-10, 1e-2],
+            "coef0": [-10.0, 10.0]
+        },
+        "svc_sigmoid": {
+            "C": [1e-2, 1e10],
+            "gamma": [1e-10, 1e-2],
+            "coef0": [-10.0, 10.0]
         },
         "forest": {
             "n_estimators": [5, 1000],
-            "min_samples_split": [2, 10],
-            # "min_samples_leaf": [1, ],
-            # "min_weight_fraction_leaf": [ 0.0, 0.5 ],
-            # "max_features": [ 0.0, 1.0 ],
-            # "max_samples": [ 0.0, 1.0 ]
+            "max_depth": [2, 500],
+            "min_samples_split": [0.0, 0.25],
+            "min_samples_leaf": [0.0, 0.25],
+            "min_weight_fraction_leaf": [0.0, 0.25],
+            "max_features": [0.0, 1.0],
+            "min_impurity_decrease": [0.0, 0.1],
+            "max_samples": [0.0, 1.0],
+            "cpp_alpha": [0.0, 0.2]
         },
         "mlp": {
-            "hidden": [32, 1024],
-            "alpha": [0.00001, 0.001],
-            "learning_rate_init": [0.0001, 0.01],
-            "beta_1": [0.8, 1 - 1e-4],
-            "beta_2": [0.8, 1 - 1e-4]
+            "hidden_1": [32, 2048],
+            "hidden_2": [16, 1024],
+            "hidden_3": [8, 512],
+            "alpha": [1e-10, 1e-2],
+            "batch_size": [8, 1024],
+            "learning_rate_init": [1e-10, 1e-1],
+            "max_iter": [5, 500],
+            "beta_1": [0.5, 1-1e-6],
+            "beta_2": [0.5, 1-1e-6],
+            "epsilon": [1e-10, 1e-6],
+            "n_iter_no_change": [2, 50]
         }
     }
 }
