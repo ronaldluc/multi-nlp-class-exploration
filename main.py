@@ -1,11 +1,16 @@
+import pickle
 from pathlib import Path
-from logging import basicConfig, INFO
+from logging import basicConfig, INFO, info
 from pathlib import Path
 from pprint import pprint
 
 from src.config import CONFIG, BAYES_OPT_CONFIG
 from src.matrices import load_data
 from src.pipeline import Pipeline
+
+import pandas as pd
+
+from src.utils import settings_dict2df
 
 
 def print_config_warnings():
@@ -33,16 +38,11 @@ if __name__ == "__main__":
 
     pipeline.add_clf("svc").add_clf("forest").add_clf("mlp")
 
-    # pipeline.create_matrices()
-    best_settings = pipeline.run()
-    pprint(best_settings)
+    pipeline.create_matrices()
+    pipeline.run()
 
-    # initial_matrices = create_matrices(dfs_)
-    # pickle.dump(initial_matrices, open(CONFIG['storage']['initial_matrices'], 'wb'))
-    # initial_matrices_: InitMatrix = pickle.load(open(CONFIG['storage']['initial_matrices'], 'rb'))
-    # size = total_size(initial_matrices_)
-    # info(f'Loaded initial matrices {size:10} {int(size ** (1 / 2)):10}^2')
-    # od_matrices = apply_od(initial_matrices_)
-    # results = classify(od_matrices, dfs_)
-    # pprint(results)
-    # info('Done')
+    best_settings = pickle.load(open(Path(CONFIG['storage']['results']), 'rb'))
+    pprint(best_settings)
+    settings_dict2df(best_settings).to_csv(CONFIG['storage']['output'], index=False)
+    info(f"Output successfully generated to {CONFIG['storage']['output']}")
+    info('Done')

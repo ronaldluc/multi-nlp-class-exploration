@@ -51,13 +51,10 @@ def create_matrices(dfs: Dict[str, pd.DataFrame], method: str) -> InitMatrix:
     }[method](dfs)
 
 
-def create_tfidf(dfs: Dataset, max_features=10000, min_df=0, max_df=0.2) -> Dataset:
+def create_tfidf(dfs: Dataset) -> Dataset:
     """Compute TF-IDF based doc embedding"""
     info(f'Computing tf-idf on {dfs["train"].shape}')
-    vectorizer = TfidfVectorizer(strip_accents='unicode', lowercase='true',
-                                 preprocessor=stem_string, stop_words='english',
-                                 max_features=max_features, dtype=np.float32, min_df=min_df,
-                                 max_df=max_df, ngram_range=(1, 1))
+    vectorizer = TfidfVectorizer(strip_accents='unicode', preprocessor=stem_string, dtype=np.float32, **CONFIG['tfidf'])
     vectorizer.fit(dfs['train'].text)
     return {name: vectorizer.transform(df.text) for name, df in dfs.items()}
 
@@ -79,7 +76,7 @@ def create_wordvec(dfs: Dataset) -> Dataset:
     """Compute word-vector based doc embedding"""
     info(f'Computing word vectors on {dfs["train"].shape}')
     path = downloader.load(CONFIG['wordvec']['url'], return_path=True)
-    w2v = KeyedVectors.load_word2vec_format(path, binary=False, limit=200000)
+    w2v = KeyedVectors.load_word2vec_format(path, binary=False, limit=CONFIG['wordvec']['limit_size'])
     return {name: np.stack(df.text.apply(
         lambda doc: w2v[[w for w in simple_preprocess(doc) if w in w2v]].mean(axis=0)
     )) for name, df in dfs.items()}

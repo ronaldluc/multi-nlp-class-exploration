@@ -36,19 +36,19 @@ class Pipeline:
     def create_matrices(self):
         for prep in self.prep_methods:
             dataset = create_matrices(self.dfs, prep)
-            pickle.dump(dataset, open(Path(CONFIG['storage']['initial_matrices']) / f'{prep}.pkl', 'wb'))
+            pickle.dump(dataset, open(Path(CONFIG['storage']['initial_matrices_folder']) / f'{prep}.pkl', 'wb'))
 
     def run(self):
         results = {}
         search_space = list(product(self.prep_methods, self.od_methods, self.clf_methods))
         shuffle(search_space)
         progress = ProgressLog(len(search_space))
-        for index, pipe_def in enumerate(search_space):
+        for index, pipe_def in enumerate(search_space):     # TODO: Do want to parallelize?
             prep, od, clf = pipe_def
             info(f'Running {pipe_def}')
             progress.log(done=index)
             try:
-                dataset = pickle.load(open(Path(CONFIG['storage']['initial_matrices']) / f'{prep}.pkl', 'rb'))
+                dataset = pickle.load(open(Path(CONFIG['storage']['initial_matrices_folder']) / f'{prep}.pkl', 'rb'))
                 best_settings = self._run_step(dataset, prep, od, clf)
                 results[pipe_def] = best_settings
                 info(f"Best setting {best_settings}")
@@ -60,6 +60,7 @@ class Pipeline:
             if results[pipe_def] != "failed":
                 results[pipe_def]["test_score"] = self._test_settings(self.dfs, dataset, od, clf,
                                                                       results[pipe_def]["params"])
+            pickle.dump(results, open(Path(CONFIG['storage']['results']), 'wb'))
 
         return results
 

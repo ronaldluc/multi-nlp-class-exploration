@@ -49,6 +49,11 @@ def nested_max(obj):
     return max([nested_max(val) for key, val in obj.items()])
 
 
+def settings_dict2df(settings: dict) -> pd.DataFrame:
+    return pd.DataFrame(settings).T.reset_index().rename(
+        columns={'level_0': 'matrix', 'level_1': 'od', 'level_2': 'clf'})
+
+
 class ProgressLog:
     def __init__(self, total):
         self.total = total
