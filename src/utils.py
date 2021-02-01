@@ -6,6 +6,7 @@ from typing import Dict, Union
 
 import numpy as np
 import pandas as pd
+import scipy
 
 Dataset = Dict[str, Union[pd.DataFrame, np.ndarray]]
 """[train/val/test] -> np.ndarray"""
@@ -56,6 +57,10 @@ def settings_dict2df(settings: dict) -> pd.DataFrame:
 
 def exp10_floats(kwargs):
     return {k: 10 ** v if isinstance(v, float) else v for k, v in kwargs.items()}
+
+
+def sparse2numpy(dfs):
+    return {k: v.toarray() if scipy.sparse.issparse(v) else v for k, v in dfs.items()}
 
 
 class ProgressLog:

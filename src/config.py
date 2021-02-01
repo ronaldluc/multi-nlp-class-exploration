@@ -77,16 +77,18 @@ BAYES_OPT_CONFIG = {
             # "cpp_alpha": [0.0, 0.2]
         },
         "mlp": {  # floats are pow(10, X)
-            "hidden_1": [1.1, 2.5],
-            "hidden_2": [0.0, 2.0],
-            "hidden_3": [0.0, 1.5],
+            "hidden_1": [1.1, 2.3],
+            "hidden_2": [0.0, 2.3],
+            "hidden_3": [0.0, 1.7],
             # "alpha": [-10.0, -2.0],
-            "batch_size": [8, 128],
-            "learning_rate_init": [-8.0, -1.0],
+            "batch_size": [16, 128],
+            'patience': [0, 10],
+            'dropout': [0.0, 0.3]
+            # "learning_rate_init": [-7.0, -2.0],
             # "epsilon": [-10.0, -6.0],
             # "beta_1": [-0.3, 0.0-1e6],
             # "beta_2": [-0.3, 0.0-1e6],
-            "n_iter_no_change": [2, 20]
+            # "n_iter_no_change": [2, 20]
             # "max_iter": [5, 500],
         }
     }
