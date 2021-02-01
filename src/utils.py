@@ -54,6 +54,10 @@ def settings_dict2df(settings: dict) -> pd.DataFrame:
         columns={'level_0': 'matrix', 'level_1': 'od', 'level_2': 'clf'})
 
 
+def exp10_floats(kwargs):
+    return {k: 10 ** v if isinstance(v, float) else v for k, v in kwargs.items()}
+
+
 class ProgressLog:
     def __init__(self, total):
         self.total = total

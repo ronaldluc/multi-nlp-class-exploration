@@ -13,6 +13,7 @@ from src.utils import train_size
 def apply_pca(dfs: Dataset, **kwargs) -> Dataset:
     debug(f'Applying PCA on {train_size(dfs):e}')
     # pca = PCA(n_components=CONFIG['pca']['n_components'])   # TODO: Non spare `scipy.sparse.issparse(my_matrix)`
+    kwargs['n_components'] = min(kwargs['n_components'], dfs['train'].shape[-1] - 1)
     transformer = TruncatedSVD(**kwargs)  # for sparse only
     transformer.fit(dfs['train'])
     return {dataset: transformer.transform(df) for dataset, df in dfs.items()}

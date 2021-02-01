@@ -6,7 +6,7 @@ from sklearn.neural_network import MLPClassifier
 from sklearn.svm import SVC
 
 from src.config import CONFIG
-from src.utils import Dataset, train_size
+from src.utils import Dataset, train_size, exp10_floats
 
 
 def classify_method(dfs: Dataset, original_dfs: Dataset, method_class, is_test: bool, **kwargs):
@@ -24,19 +24,19 @@ def classify_method(dfs: Dataset, original_dfs: Dataset, method_class, is_test: 
 
 # TODO: Meta classifier for all scikit?
 def classify_svc_rbf(od_matrices: Dataset, original_dfs: Dataset, is_test: bool, **kwargs):
-    return classify_method(od_matrices, original_dfs, SVC, is_test, kernel='rbf', **kwargs)
+    return classify_method(od_matrices, original_dfs, SVC, is_test, kernel='rbf', **exp10_floats(kwargs))
 
 
 def classify_svc_linear(od_matrices: Dataset, original_dfs: Dataset, is_test: bool, **kwargs):
-    return classify_method(od_matrices, original_dfs, SVC, is_test, kernel='linear', **kwargs)
+    return classify_method(od_matrices, original_dfs, SVC, is_test, kernel='linear', **exp10_floats(kwargs))
 
 
 def classify_svc_poly(od_matrices: Dataset, original_dfs: Dataset, is_test: bool, **kwargs):
-    return classify_method(od_matrices, original_dfs, SVC, is_test, kernel='poly', **kwargs)
+    return classify_method(od_matrices, original_dfs, SVC, is_test, kernel='poly', **exp10_floats(kwargs))
 
 
 def classify_svc_sigmoid(od_matrices: Dataset, original_dfs: Dataset, is_test: bool, **kwargs):
-    return classify_method(od_matrices, original_dfs, SVC, is_test, kernel='sigmoid', **kwargs)
+    return classify_method(od_matrices, original_dfs, SVC, is_test, kernel='sigmoid', **exp10_floats(kwargs))
 
 
 def classify_forest(od_matrices: Dataset, original_dfs: Dataset, is_test: bool, **kwargs):
@@ -44,12 +44,11 @@ def classify_forest(od_matrices: Dataset, original_dfs: Dataset, is_test: bool, 
 
 
 # TODO: Change to tf.Keras for extra spice
-def classify_mlp(od_matrices: Dataset, original_dfs: Dataset, is_test: bool, **kwargs):
-    hidden_layer_sizes = (kwargs["hidden_1"], kwargs["hidden_2"], kwargs["hidden_3"])
-    for i in range(3):
-        del kwargs["hidden_{}".format(i+1)]
+def classify_mlp(od_matrices: Dataset, original_dfs: Dataset, is_test: bool,
+                 hidden_1, hidden_2, hidden_3, **kwargs):
+    hidden_layer_sizes = [int(10 ** x) for x in [hidden_1, hidden_2, hidden_3] if x > 1.0]
     return classify_method(od_matrices, original_dfs, MLPClassifier, is_test, warm_start=True,
-                           hidden_layer_sizes=hidden_layer_sizes, early_stopping=True, **kwargs)
+                           hidden_layer_sizes=hidden_layer_sizes, early_stopping=True, **exp10_floats(kwargs))
 
 
 def classify(od_matrices: Dataset, original_dfs: Dataset, method: str, is_test: bool, **kwargs):

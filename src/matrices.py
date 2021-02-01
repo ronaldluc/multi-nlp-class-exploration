@@ -1,3 +1,4 @@
+from collections import defaultdict
 from logging import info
 from pathlib import Path
 from typing import Dict
@@ -8,6 +9,7 @@ import tensorflow_hub as hub
 from gensim import downloader
 from gensim.models import KeyedVectors
 from gensim.utils import simple_preprocess
+from scipy.sparse import hstack
 from sklearn.feature_extraction.text import TfidfVectorizer
 from stemming.lovins import stem
 
@@ -48,7 +50,19 @@ def create_matrices(dfs: Dict[str, pd.DataFrame], method: str) -> InitMatrix:
         'tfidf': create_tfidf,
         'uce': create_uce,
         'wordvec': create_wordvec,
+        'multi': create_multi,
     }[method](dfs)
+
+
+def create_multi(dfs: Dataset) -> Dataset:
+    """Concatenate all embeddings"""
+    info(f'Computing all-in-one on {dfs["train"].shape}')
+    total = defaultdict(list)
+    for res in [create_tfidf(dfs), create_wordvec(dfs), create_uce(dfs)]:
+        for k, v in res.items():
+            total[k].append(v)
+
+    return {name: hstack(list_df) for name, list_df in total.items()}
 
 
 def create_tfidf(dfs: Dataset) -> Dataset:

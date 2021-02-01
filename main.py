@@ -32,13 +32,15 @@ if __name__ == "__main__":
     # dfs_ = load_data(train='data/train.csv', val='data/val.csv', test='data/test.csv')
 
     pipeline = Pipeline(dfs_)
-    pipeline.add_prep("tfidf").add_prep("uce").add_prep("wordvec")
+    pipeline.add_prep(["tfidf", 'uce', 'wordvec', 'multi'])
+    # pipeline.add_prep(['multi'])
 
-    pipeline.add_od("none").add_od("pca").add_od("scaled")
+    pipeline.add_od(["none", 'pca', 'scaled'])
 
-    pipeline.add_clf("svc").add_clf("forest").add_clf("mlp")
+    pipeline.add_clf(['svc_rbf', 'svc_poly', 'forest', 'mlp'])
+    # pipeline.add_clf(['mlp'])
 
-    pipeline.create_matrices()
+    # pipeline.create_matrices()
     pipeline.run()
 
     best_settings = pickle.load(open(Path(CONFIG['storage']['results']), 'rb'))

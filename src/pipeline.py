@@ -21,16 +21,22 @@ class Pipeline:
         self.od_methods = []
         self.clf_methods = []
 
-    def add_prep(self, name):
-        self.prep_methods.append(name)
+    def add_prep(self, names):
+        if not hasattr(names, '__iter__'):
+            names = [names, ]
+        self.prep_methods += names
         return self
 
-    def add_od(self, name):
-        self.od_methods.append(name)
+    def add_od(self, names):
+        if not hasattr(names, '__iter__'):
+            names = [names, ]
+        self.od_methods += names
         return self
 
-    def add_clf(self, name):
-        self.clf_methods.append(name)
+    def add_clf(self, names):
+        if not hasattr(names, '__iter__'):
+            names = [names, ]
+        self.clf_methods += names
         return self
 
     def create_matrices(self):
@@ -43,7 +49,7 @@ class Pipeline:
         search_space = list(product(self.prep_methods, self.od_methods, self.clf_methods))
         shuffle(search_space)
         progress = ProgressLog(len(search_space))
-        for index, pipe_def in enumerate(search_space):     # TODO: Do want to parallelize?
+        for index, pipe_def in enumerate(search_space):  # TODO: Do want to parallelize?
             prep, od, clf = pipe_def
             info(f'Running {pipe_def}')
             progress.log(done=index)
@@ -86,10 +92,15 @@ class Pipeline:
     @staticmethod
     def create_optimized_function(orig_dataset, prep_dataset, od, clf, **locked_kwargs):
         def optimized_function(**optimized_kwargs):
-            od_kwargs, clf_kwargs = Pipeline.distribute_config(od, clf, **locked_kwargs, **optimized_kwargs)
+            try:
+                od_kwargs, clf_kwargs = Pipeline.distribute_config(od, clf, **locked_kwargs, **optimized_kwargs)
 
-            od_dfs = apply_od(prep_dataset, od, **od_kwargs)
-            return classify(od_dfs, orig_dataset, clf, is_test=False, **clf_kwargs) + gauss(0, 1e-6)
+                od_dfs = apply_od(prep_dataset, od, **od_kwargs)
+                metric = classify(od_dfs, orig_dataset, clf, is_test=False, **clf_kwargs) + gauss(0, 1e-6)
+            except Exception as e:
+                error(f'Step {od}-{clf}: inside bayes opt failed, {e}')
+                metric = -1.0
+            return metric
 
         return optimized_function
 
